@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>صنعت یار - مدل هوش مصنوعی یادگیرنده و تطبیق پذیر فرایندهای صنعتی و معدنی</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+</head>
+<body>
+  <!-- منوی ثابت -->
+  <nav class="main-menu">
+  <div class="menu-row top-row">
+    <div class="menu-title">
+      صنعت<span>یار</span>
+    </div>
+    <div class="menu-controls">
+      <button id="predict" class="btn1 btn-primary">پیش‌بینی</button>
+      <!--button id="clearAll" class="btn btn-secondary">پاک‌سازی مقادیر</button>
+      <span id="status" class="status">مدل: در حال بارگذاری...</span-->
+      <div class="menu-report">
+        <button class="report-btn">گزارش‌گیری</button>
+        <div class="report-dropdown">
+          <div class="report-item" id="reportResults">گزارش نتایج با عدم قطعیت</div>
+          <div class="report-item" id="reportDistributions">گزارش توزیع ویژگی‌ها</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu-row bottom-row">
+    <!--button id="fillRandom" class="btn btn-secondary">پر کردن ۵ مقدار رندم</button-->
+  </div>
+</nav>
+
+  <main class="container">
+    <header>
+      <h1>مدل هوش مصنوعی یادگیرنده و تطبیق پذیر فرایندهای صنعتی و معدنی</h1>
+    
+    </header>
+
+    <h2 class="mt-4 mb-3">ویژگی‌ها</h2>
+    <section id="featuresGrid" class="features-grid"></section>
+
+    <div class="summary-panel card">
+      <h2 class="p-3 border-bottom">خلاصه خروجی</h2>
+      <div class="p-3">
+        <div class="summary-chart-container">
+          <canvas id="summaryChart" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Table Modal -->
+    <div id="tableModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="m-0">نتایج مدل (DataFrame)</h2>
+          <button id="closeTable" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="tableContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div id="reportModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 class="m-0" id="reportModalTitle">گزارش</h2>
+          <button id="closeReport" class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div id="reportContainer"></div>
+        </div>
+      </div>
+    </div>
+
+  
+
+   <script src="script3.js"></script>
+  </main>
+</body>
+</html>
