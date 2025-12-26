@@ -1,0 +1,25 @@
+# ----------------------
+# Data (generated files)
+# ----------------------
+data/raw/*.csv
+data/raw/*.parquet
+
+# ----------------------
+# Python cache
+# ----------------------
+__pycache__/
+*.pyc
+*.pyo
+
+# ----------------------
+# Virtual environments
+# ----------------------
+.venv/
+venv/
+env/
+
+# ----------------------
+# OS files
+# ----------------------
+.DS_Store
+Thumbs.db

@@ -4,49 +4,31 @@ and parameter regression.
 """
 
 import numpy as np
+from sklearn.metrics import accuracy_score, confusion_matrix
 def evaluate_distribution_classification(
     y_true,
     y_pred_probs,
-    class_names,
+    model_classes,
 ):
     """
-    Evaluate distribution classification performance.
-
-    Parameters
-    ----------
-    y_true : array-like
-        True distribution labels.
-    y_pred_probs : ndarray
-        Predicted probabilities for each distribution.
-    class_names : list
-        Ordered list of distribution class names.
-
-    Returns
-    -------
-    dict
-        Accuracy and confusion matrix.
+    Evaluate distribution classification using model class order.
     """
-    # predicted class index
-    y_pred_idx = y_pred_probs.argmax(axis=1)
 
-    # map class names to indices
-    class_to_idx = {name: i for i, name in enumerate(class_names)}
-    y_true_idx = [class_to_idx[y] for y in y_true]
+    # map true labels to indices using model class order
+    class_to_index = {c: i for i, c in enumerate(model_classes)}
+    y_true_idx = y_true.map(class_to_index).values
 
-    # accuracy
-    accuracy = np.mean(np.array(y_true_idx) == y_pred_idx)
+    # predicted indices
+    y_pred_idx = np.argmax(y_pred_probs, axis=1)
 
-    # confusion matrix
-    n_classes = len(class_names)
-    conf_matrix = np.zeros((n_classes, n_classes), dtype=int)
-
-    for t, p in zip(y_true_idx, y_pred_idx):
-        conf_matrix[t, p] += 1
+    accuracy = accuracy_score(y_true_idx, y_pred_idx)
+    cm = confusion_matrix(y_true_idx, y_pred_idx)
 
     return {
         "accuracy": accuracy,
-        "confusion_matrix": conf_matrix,
+        "confusion_matrix": cm,
     }
+
 def evaluate_parameter_regression(
     y_true_params,
     y_pred_params,

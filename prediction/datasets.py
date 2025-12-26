@@ -39,11 +39,21 @@ class PredictionDataset:
 
         return self.df.iloc[train_idx], self.df.iloc[val_idx]
 
-    def apply_mask(self, df: pd.DataFrame) -> pd.DataFrame:
+    def apply_mask(self, df):
         df_masked = df.copy()
 
-        for col in self.numerical_cols:
-            mask = self.rng.random(len(df_masked)) < self.mask_ratio
-            df_masked.loc[mask, col] = np.nan
+        # build feature list explicitly
+        feature_cols = self.numerical_cols + self.categorical_cols
+
+        for col in feature_cols:
+        # IMPORTANT: never mask x1 (key decision feature)
+            if col == "x1":
+                continue
+
+        if np.random.rand() < self.mask_ratio:
+            df_masked.loc[:, col] = np.nan
 
         return df_masked
+
+    
+

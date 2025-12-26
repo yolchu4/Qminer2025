@@ -5,9 +5,18 @@ from sklearn.neural_network import MLPClassifier, MLPRegressor
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
+from sklearn.linear_model import LogisticRegression
 
-from .config import PROCESS_CONFIG
+from prediction.config import PROCESS_CONFIG
+
+
 class DistributionPredictor:
+    """
+    Predict distribution class and corresponding parameters
+    from incomplete input data.
+    """
+
     def __init__(
         self,
         process_name: str = "default",
@@ -15,19 +24,105 @@ class DistributionPredictor:
         random_state: int = 42,
     ):
         if process_name not in PROCESS_CONFIG:
-            raise ValueError(f"Unknown process: {process_name}")
+            raise ValueError(f"Unknown process name: {process_name}")
 
         self.cfg = PROCESS_CONFIG[process_name]
 
+        # input features
         self.numerical_cols = self.cfg["numerical_features"]
         self.categorical_cols = self.cfg["categorical_features"]
 
+        # output structure
         self.distributions = list(self.cfg["parameter_map"].keys())
-        self.all_parameters = []
-        for p in self.cfg["parameter_map"].values():
-            self.all_parameters.extend(p)
 
-        self.random_state = random_state
+        self.all_parameters = []
+        for params in self.cfg["parameter_map"].values():
+            self.all_parameters.extend(params)
+
         self.hidden_layer_sizes = hidden_layer_sizes
+        self.random_state = random_state
 
         self._build_models()
+
+    
+    def _build_models(self):
+        """Build preprocessing and prediction models with task-specific preprocessors."""
+
+        # ---------- shared transformers ----------
+        numeric_transformer = Pipeline(
+            steps=[
+                ("imputer", SimpleImputer(strategy="mean")),
+            ]
+        )
+
+        categorical_transformer = Pipeline(
+            steps=[
+                ("imputer", SimpleImputer(strategy="most_frequent")),
+                ("onehot", OneHotEncoder(handle_unknown="ignore")),
+            ]
+        )
+
+        # ---------- classification preprocessor ----------
+        # IMPORTANT: classifier only sees x1 (+ categorical)
+        clf_preprocessor = ColumnTransformer(
+            transformers=[
+                ("num", numeric_transformer, ["x1"]),
+                ("cat", categorical_transformer, self.categorical_cols),
+            ]
+        )
+
+        # ---------- regression preprocessor ----------
+        # regressor sees all numerical features (+ categorical)
+        reg_preprocessor = ColumnTransformer(
+            transformers=[
+                ("num", numeric_transformer, self.numerical_cols),
+                ("cat", categorical_transformer, self.categorical_cols),
+            ]
+        )
+
+        # ---------- distribution classifier ----------
+        self.dist_model = Pipeline(
+            steps=[
+                ("preprocess", clf_preprocessor),
+                (
+                    "clf",
+                    LogisticRegression(
+                    solver="lbfgs",
+                    max_iter=1000,
+                    ),
+                    
+                ),
+            ]
+        )
+
+        # ---------- parameter regressor ----------
+        self.param_model = Pipeline(
+            steps=[
+                ("preprocess", reg_preprocessor),
+                (
+                    "reg",
+                    MLPRegressor(
+                        hidden_layer_sizes=self.hidden_layer_sizes,
+                        random_state=self.random_state,
+                        max_iter=500,
+                    ),
+                ),
+            ]
+        )
+
+    
+    
+    def fit(self, X, y_dist, y_params):
+        """Train both classifier and regressor."""
+        self.dist_model.fit(X, y_dist)
+        self.param_model.fit(X, y_params)
+
+    def predict(self, X) -> Dict[str, np.ndarray]:
+        """Predict distribution probabilities and parameters."""
+        dist_probs = self.dist_model.predict_proba(X)
+        param_preds = self.param_model.predict(X)
+
+        return {
+            "distribution_probs": dist_probs,
+            "parameter_predictions": param_preds,
+        }
