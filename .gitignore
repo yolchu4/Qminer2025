@@ -1,16 +1,44 @@
-data/raw/test_10000_multi.csv
-data/raw/test_1000_multi.csv
-data/raw/test_200.csv
-data/raw/test_200_signal.csv
-data/raw/test_small.csv
-datamaker/__pycache__/maker.cpython-313.pyc
-datamaker/__pycache__/maker_1000.cpython-313.pyc
-datamaker/__pycache__/maker_10000.cpython-313.pyc
-datamaker/maker.py
-datamaker/maker_1000.py
-datamaker/maker_10000.py
-datamaker/makersignal.py
-data/demo/predict_known_30.csv
-data/demo/predict_truth_30.csv
-data/demo/train_full_70.csv
-data/raw/process_control_full.csv
+# ================================
+# Python
+# ================================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+dist/
+build/
+
+# ================================
+# Virtual Environments
+# ================================
+venv/
+.venv/
+env/
+ENV/
+
+# ================================
+# Jupyter / Experiments
+# ================================
+.ipynb_checkpoints/
+
+# ================================
+# Data (DO NOT COMMIT DATA)
+# ================================
+data/raw/
+data/demo/
+
+# ================================
+# OS / Editor
+# ================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# ================================
+# Logs / Temp
+# ================================
+*.log
+*.tmp
