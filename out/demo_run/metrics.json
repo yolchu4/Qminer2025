@@ -1,0 +1,23 @@
+{
+  "delta": {
+    "reactor_temperature": 19.286427153955717,
+    "reactor_pressure": 0.746541120705544,
+    "agitator_speed": 19.30917175508481,
+    "reactant_feed_flow": 1.4652297721856122,
+    "reactant_feed_concentration": 0.05709587415501179
+  },
+  "coverage": {
+    "reactor_temperature": 0.8666666666666667,
+    "reactor_pressure": 0.9266666666666666,
+    "agitator_speed": 0.9066666666666666,
+    "reactant_feed_flow": 0.8666666666666667,
+    "reactant_feed_concentration": 0.9133333333333333
+  },
+  "mae": {
+    "reactor_temperature": 10.12617572785346,
+    "reactor_pressure": 0.3208696546480738,
+    "agitator_speed": 8.924439674860647,
+    "reactant_feed_flow": 0.7135711546139312,
+    "reactant_feed_concentration": 0.026508224126263864
+  }
+}

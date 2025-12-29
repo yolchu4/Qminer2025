@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Process Control Demo UI</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Process Control Demo (Frozen v1)</h1>
+
+    <div class="card">
+      <h2>Settings</h2>
+      <div class="grid">
+        <label>
+          n_regimes
+          <input id="n_regimes" type="number" min="1" max="20" value="4" />
+        </label>
+
+        <label>
+          alpha
+          <input id="alpha" type="number" min="0.5" max="0.99" step="0.01" value="0.90" />
+        </label>
+
+        <label>
+          data_dir (local run)
+          <input id="data_dir" type="text" value="data" />
+        </label>
+
+        <label>
+          output_dir (optional)
+          <input id="output_dir" type="text" placeholder="e.g. out/demo_run_custom" />
+        </label>
+
+        <label>
+          API Base URL
+          <input id="api_base" type="text" value="http://127.0.0.1:8000" />
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Run with Local Files</h2>
+      <p>Uses <code>data/train_dataset.csv</code>, <code>data/calib_dataset.csv</code>, <code>data/predict_dataset.csv</code> (+ optional compare)</p>
+      <button id="btn_run_local">Run Demo (Local)</button>
+    </div>
+
+    <div class="card">
+      <h2>Run with Upload</h2>
+
+      <div class="grid">
+        <label>train_dataset.csv <input id="train_file" type="file" accept=".csv" /></label>
+        <label>calib_dataset.csv <input id="calib_file" type="file" accept=".csv" /></label>
+        <label>predict_dataset.csv <input id="predict_file" type="file" accept=".csv" /></label>
+        <label>compare_dataset.csv (optional) <input id="compare_file" type="file" accept=".csv" /></label>
+      </div>
+
+      <button id="btn_run_upload">Run Demo (Upload)</button>
+    </div>
+
+    <div class="card">
+      <h2>Status</h2>
+      <pre id="status" class="status">Ready.</pre>
+    </div>
+
+    <div class="card">
+      <h2>Results</h2>
+
+      <div class="row">
+        <div>
+          <h3>Calibration Delta</h3>
+          <div id="tbl_delta"></div>
+        </div>
+        <div>
+          <h3>Coverage</h3>
+          <div id="tbl_coverage"></div>
+        </div>
+        <div>
+          <h3>MAE</h3>
+          <div id="tbl_mae"></div>
+        </div>
+      </div>
+
+      <h3>Downloads</h3>
+      <div id="downloads"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

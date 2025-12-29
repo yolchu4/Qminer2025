@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Process Control</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      margin: 40px;
+    }
+
+    h1 { margin-bottom: 5px; }
+    h2 { margin-top: 30px; }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 6px;
+      max-width: 1000px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 6px;
+      margin-top: 4px;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    .spinner {
+      margin-top: 10px;
+      display: none;
+    }
+
+    .spinner::after {
+      content: "⏳ Running demo…";
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      background: white;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background: #f0f0f0;
+    }
+
+    .files a {
+      display: block;
+      margin-top: 6px;
+    }
+    #chartContainer {
+    position: relative;
+    }
+
+    #meanTrueChart {
+    width: 100%;
+  height: 100%;
+}
+
+  </style>
+</head>
+
+<body>
+
+<h1>Intelligent Process Control System</h1>
+<p>Demo Version</p>
+
+<div class="card" style="margin-bottom:20px;">
+ 
+
+
+<div class="card" style="margin-bottom:20px;">
+    <h2 style="margin-top:0;">Process Description</h2>
+  <p>This demo represents a industrial reactor process where multiple inlet streams are combined and controlled to maintain stable operating conditions and predictable product behavior.</p>
+   <svg width="100%" viewBox="0 0 900 220" xmlns="http://www.w3.org/2000/svg">
+
+    <!-- arrow marker -->
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5"
+              orient="auto" markerUnits="strokeWidth">
+        <path d="M0,0 L10,5 L0,10 Z" fill="#333"/>
+      </marker>
+    </defs>
+
+    <!-- Reactor box -->
+    <rect x="320" y="70" width="180" height="90" rx="12" fill="#eefdf3" stroke="#16a34a" stroke-width="2"/>
+    <text x="410" y="100" text-anchor="middle" font-weight="bold" font-size="16" fill="#111">Reactor</text>
+    <text x="410" y="130" text-anchor="middle" font-size="12" fill="#333">T, P, N</text>
+
+    <!-- LEFT: Feed A/B/C arrows (horizontal in) -->
+    <line x1="40" y1="80" x2="320" y2="80" stroke="#333" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <text x="120" y="75" font-size="12" fill="#111">Feed A (Fₐ, Cₐ)</text>
+
+    <line x1="40" y1="115" x2="320" y2="115" stroke="#333" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <text x="120" y="110" font-size="12" fill="#111">Feed B (Fᵦ, Cᵦ)</text>
+
+    <line x1="40" y1="150" x2="320" y2="150" stroke="#333" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <text x="120" y="145" font-size="12" fill="#111">Feed C (F𝒸, C𝒸)</text>
+
+    <!-- TOP: Reactant arrow (vertical in) -->
+    <line x1="410" y1="25" x2="410" y2="70" stroke="#dc2626" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <text x="410" y="18" text-anchor="middle" font-size="12" fill="#dc2626" font-weight="bold">
+      Reactant (Fᵣ, Cᵣ)
+    </text>
+
+    <!-- RIGHT: Product A/B arrows (horizontal out) -->
+    <line x1="500" y1="90" x2="780" y2="90" stroke="#333" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <text x="550" y="85" font-size="12" fill="#111">Product A (Flow, Conc.)</text>
+
+    <line x1="500" y1="140" x2="780" y2="140" stroke="#333" stroke-width="2.2" marker-end="url(#arrow)"/>
+    <text x="550" y="135" font-size="12" fill="#111">Product B (Flow, Conc.)</text>
+
+  </svg>
+  
+<h2>Controlled & Observed Variables</h2>
+<p>The demo focuses on typical control-relevant variables, including (examples from the dataset):</p>
+<p>Reactor temperature</p>
+<p>Reactor pressure</p>
+<p>Agitator speed (mixing intensity)</p>
+<p>Reactant feed flow</p>
+<p>Reactant feed concentration</p>
+<h2>Demo Dataset</h2>
+
+<p>The included demo data consists of 1,000 time-series samples representing process measurements taken at 1-hour time intervals.
+Each sample represents one timestamped snapshot of the process state, forming a dense temporal profile of 
+reactor behavior under varying conditions.</p>
+<h2>Goal of the Intelligent control System</h2>
+<p>The system demonstrates an intelligent, uncertainty-aware process control workflow:
+learn process behavior from historical data,
+quantify uncertainty and calibrate prediction intervals,
+produce stable outputs that help operators understand risk and variability,
+and support decision-making when operating conditions drift between different regimes.</p>
+</div>
+
+
+
+<div class="card">
+
+  <div class="grid">
+    <div>
+      <label>No. of Regimes</label>
+      <input id="n_regimes" type="number" value="3" />
+    </div>
+
+    <div>
+      <label>alpha [Confidence level]</label>
+      <input id="alpha" type="number" step="0.01" value="0.95" />
+    </div>
+  </div>
+
+  <button id="runBtn" onclick="runDemo()">Run Demo</button>
+
+  <div class="status" id="status">Status: Idle</div>
+  <div class="spinner" id="spinner"></div>
+
+  <h2>Output Files</h2>
+  <div class="files" id="files"></div>
+
+  <h2>Calibration Deltas</h2>
+  <table id="deltaTable">
+    <thead>
+      <tr><th>Parameter</th><th>Delta</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>Coverage (q05–q95)</h2>
+  <table id="coverageTable">
+    <thead>
+      <tr><th>Parameter</th><th>Coverage</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <h2>MAE (Mean Prediction)</h2>
+  <table id="maeTable">
+    <thead>
+      <tr><th>Parameter</th><th>MAE</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+</div>
+
+<h2>Mean Prediction vs Real Values</h2>
+
+<label style="font-weight:bold; margin-top:20px; display:block;">
+  Select Parameter:
+</label>
+
+<select id="paramSelect" style="padding:6px; margin-bottom:15px; width:300px;">
+</select>
+
+<div id="chartContainer" style="height:420px; max-width:900px;">
+  <canvas id="meanTrueChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

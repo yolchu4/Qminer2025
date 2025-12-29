@@ -1,0 +1,15 @@
+# --- Backend API ---
+fastapi>=0.110
+uvicorn[standard]>=0.29
+python-multipart>=0.0.9
+
+# --- Data handling ---
+pandas>=2.1
+numpy>=1.24
+
+# --- ML / Core (already used in project) ---
+scikit-learn>=1.3
+scipy>=1.11
+
+# --- Optional (nice to have) ---
+pydantic>=2.5
