@@ -12,6 +12,8 @@ function smoothSeries(y, window = 3) {
 }
 
 console.log("APP.JS VERSION = 2025-01-FINAL-STABLE");
+const DEFAULT_RUN_NAME = "demo_run";
+
 
 // ==================================================
 // CSV Loader (SAFE)
@@ -47,6 +49,42 @@ let plotCache = {
 };
 
 let meanTrueChartInstance = null;
+// ==================================================
+// Load LAST demo results on page load (PRELOAD)
+// ==================================================
+
+async function loadLastDemo() {
+  const status = document.getElementById("status");
+
+  const deltaBody = document.querySelector("#deltaTable tbody");
+  const coverageBody = document.querySelector("#coverageTable tbody");
+  const maeBody = document.querySelector("#maeTable tbody");
+
+  try {
+    // 1) Load metrics.json from the default last run folder
+    const metricsRes = await fetch(`http://127.0.0.1:8000/out/${DEFAULT_RUN_NAME}/metrics.json`);
+    if (!metricsRes.ok) throw new Error("No previous demo metrics found");
+
+    const metrics = await metricsRes.json();
+
+    // 2) Fill tables (only if present)
+    if (metrics.delta) fillTable(deltaBody, metrics.delta, 3);
+    if (metrics.coverage) fillTable(coverageBody, metrics.coverage, 3);
+    if (metrics.mae) fillTable(maeBody, metrics.mae, 3);
+
+    // 3) Draw chart using the same plot path logic
+    await plotMeanVsTrue(DEFAULT_RUN_NAME);
+
+    // 4) Status message
+    if (status) status.textContent = "Status: Showing last demo run";
+
+  } catch (err) {
+    console.warn("Preload skipped:", err);
+    if (status) status.textContent = "Status: Idle (run demo to generate results)";
+  }
+}
+window.addEventListener("load", loadLastDemo);
+
 
 // ==================================================
 // Run Demo
