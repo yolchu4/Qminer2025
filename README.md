@@ -1,35 +1,52 @@
-# Process Control Model — Demo Version
+# Intelligent Process Control System (Demo)
 
-## Overview
-This project is a **demo-grade, research-aligned machine learning system**
-for industrial process control.
+This repository contains a **demo-level intelligent process control system** featuring
+regime-aware modeling, explicit uncertainty calibration, and a lightweight UI connected
+to a local backend.
 
-The goal is to **infer unknown control parameters**
-from known process inputs and outputs,
-using nonlinear, noisy, and dynamic time-series data.
+> **Important:**  
+> This demo is intended to be evaluated by **running it locally**.  
+> The UI alone does not represent the full functionality.
 
-The system is designed to be:
-- Realistic
-- Reproducible
-- UI-independent
-- Extendable to real industrial use cases
+## Local Run (Recommended)
 
----
+### Requirements
+- Python 3.9+
+- pip
 
-## Problem Definition
+### Install dependencies
 
-A process is described by three conceptual groups:
+pip install -r requirements.txt
+Start the backend
 
-1. **Process Inputs**  
-   External or disturbance variables (not directly controllable)
+python -m uvicorn api.main:app --host 127.0.0.1 --port 8000
+Open the UI
+Run a local static server in the project root:
 
-2. **Control Parameters**  
-   Decision variables to be inferred by the model
+python -m http.server
+Then open in your browser:
 
-3. **Process Outputs**  
-   Observable process measurements
+http://localhost:8000
+Demo Behavior
+On page load:
 
-The learning objective is:
+The UI automatically displays results from the last demo run
+located in out/demo_run/
 
-> **Infer control parameters given known inputs and outputs**
+Tables and plots are pre-filled
+When clicking Run Demo:
+Parameters are sent to the backend
+The demo script is executed
+New outputs overwrite out/demo_run/
+Tables and plots refresh automatically
 
+Output Location
+All demo outputs are written to:
+out/demo_run/
+Key files include:
+pred_mean.csv
+pred_q05.csv
+pred_q95.csv
+regime_weights.csv
+metrics.json
+UI-Only Deployment (Preview)
